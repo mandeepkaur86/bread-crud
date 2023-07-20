@@ -1,6 +1,7 @@
 const express =require('express')
 require('dotenv').config()
 const breadController = require('./controllers/bread')
+const mongoose=require('mongoose')
 const router = require('./controllers/bread')
 const methodOverride = require('method-override')
 
@@ -12,7 +13,10 @@ app.use(express.static('public'))
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jsx')
 app.engine('jsx', require('express-react-views').createEngine())
-
+// db connection
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('DB connected'))
+    .catch(err => console.error(err));
 
 
 //routes
