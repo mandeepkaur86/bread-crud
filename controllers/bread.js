@@ -1,32 +1,38 @@
 const router = require('express').Router()
 const Bread = require('../models/bread')
+const Baker = require('../models/baker')
 
 // GET all bread
 router.get('/', async (req, res) => {
     const breads = await Bread.find()
-    res.render('index', { breads })
+    const bakers = await Baker.find()
+    res.render('index', { breads, bakers })
 })
 
-// GET render new
-router.get('/new', (req, res) => {
-    res.render('new')
+// GET render new page
+router.get('/new', async (req, res) => {
+    const bakers = await Baker.find()
+    res.render('new',{bakers})
 })
 
 
 // GET bread by id
 router.get('/:id', async (req, res) => {
     const { id } = req.params
-    const bread = await Bread.findById(id)
+    const bread = await Bread.findById(id).populate('baker')
     res.render('show', {
         bread
     })
 })
 
 // GET edit page
-router.get('/:index/edit', (req, res) => {
+router.get('/:index/edit', async (req, res) => {
     const { id } = req.params
+    const bread = await Bread.findById(id)
+    const bakers = await Baker.find()
     res.render('edit', {
-    bread
+           bread,
+            bakers
     })
 })// POST create a new bread
 router.post('/', async (req, res) => {
